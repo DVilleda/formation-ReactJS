@@ -1,31 +1,43 @@
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import Title from "./components/Title";
-import Description from "./components/Description";
-import Form from "./components/Form";
-import MouseTracker from "./components/Cat";
-import Toggle from "./components/Toggle";
-import Loop from "./components/user";
-import Hello from "./components/hello";
+import Form from "./components/Form/Form";
+import MouseTracker from "./components/Exemples/Cat";
+import Toggle from "./components/Exemples/Toggle";
+import Loop from "./components/Exemples/user";
+import Error404 from "./components/Error404";
 
 import { Routes, Route, Link, NavLink } from "react-router-dom";
 
 import { AuthContext, LogIn, LogOut } from "./components/context/authContext";
 import { useState } from "react";
 
-import ProductList from "./components/http/httpreq";
-import Http from "./components/http/httpreq2";
-import Http2 from "./components/http/httpreq3";
+import Home from "./views/Home";
+import Api from "./views/api";
+import Login from "./views/login";
 
 function App() {
   const itemList = [1, 4, 7, 9, 345, 2345];
   const [auth, setAuth] = useState(false);
+
+  /*
+  Ce hook permet de sauvegarder le context dans un fichier local et le recharger
+  quand on ouvre l'application.
+  */
+  useEffect(() => {
+    var isTrueSet = (localStorage.getItem("auth") === 'true');
+    console.log(localStorage.getItem("auth"));
+    setAuth(isTrueSet);
+  }, []);
+
   const login = () => {
+    localStorage.setItem("auth", "true");
     setAuth(true);
   };
 
   const logout = () => {
+    localStorage.setItem("auth", "false");
     setAuth(false);
   };
   return (
@@ -40,6 +52,20 @@ function App() {
               style={({ isActive }) => ({ color: isActive ? "green" : "red" })}
             >
               Home
+            </NavLink>
+            /
+            <NavLink
+              to="/api"
+              style={({ isActive }) => ({ color: isActive ? "green" : "red" })}
+            >
+              API Calls
+            </NavLink>
+            /
+            <NavLink
+              to="/login"
+              style={({ isActive }) => ({ color: isActive ? "green" : "red" })}
+            >
+              Login
             </NavLink>
             /
             <NavLink
@@ -64,16 +90,17 @@ function App() {
             </NavLink>
             /
           </nav>
+          <p> {auth ? "Logged In" : "Have to login"}</p>
           <Routes>
-            <Route path="*" element={<Hello />} />
-            <Route path="/" element={<Title />} />
+            <Route path="*" element={<Error404 />} />
+            <Route path="/" element={<Home />} />
+            <Route path="/api" element={<Api />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/tracker" element={<MouseTracker />} />
             <Route path="/toggle" element={<Toggle />}></Route>
             <Route path="/form" element={<Form />}></Route>
             <Route path="/list/:id" element={<Loop></Loop>}></Route>
           </Routes>
-          <Http></Http>
-          <Http2></Http2>
 
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
