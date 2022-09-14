@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { FormErrors } from "./FormErros";
+import { FormErrors } from "./FormErrors";
 
 /* Marche pas en React
 class Form extends React.Component<any, any>{
@@ -47,11 +47,15 @@ class Form extends React.Component<any, any> {
     super(props);
     this.state = {
       name: "",
-      age: 0,
+      price: 0,
+      asin: "",
+      picture: "",
       formValid: false,
       nameValid: false,
-      ageValid: false,
-      formErrors: { name: "", age: "" },
+      priceValid: false,
+      asinValid: false,
+      pictureValid: false,
+      formErrors: { name: "", price: "", asin: "", picture: "" },
     };
   }
 
@@ -61,7 +65,8 @@ class Form extends React.Component<any, any> {
       alert("Invalide Form");
     } else {
       alert(
-        `The name you entered was: ${this.state.name} your age is : ${this.state.age}`
+        `The name you entered was: ${this.state.name} your price is : ${this.state.price}\n
+        the picture links to : ${this.state.picture}`
       );
     }
   };
@@ -76,13 +81,19 @@ class Form extends React.Component<any, any> {
   };
 
   validateForm() {
-    this.setState({ formValid: this.state.nameValid && this.state.ageValid });
+    this.setState({
+      formValid:
+        this.state.nameValid &&
+        this.state.priceValid &&
+        this.state.pictureValid,
+    });
   }
 
   validateField(field: String, value: any) {
     let fieldValidationErrors = this.state.formErrors;
     let nameValid = this.state.nameValid;
-    let ageValid = this.state.ageValid;
+    let priceValid = this.state.priceValid;
+    let urlValid = this.state.pictureValid;
 
     switch (field) {
       case "name":
@@ -92,11 +103,17 @@ class Form extends React.Component<any, any> {
           );
         fieldValidationErrors.name = nameValid ? "" : " nom invalide";
         break;
-      case "age":
-        ageValid = isNaN(value);
-        let ageInt = parseInt(value);
-        ageValid = ageInt > 0 && ageInt < 101;
-        fieldValidationErrors.age = ageValid ? "" : " age invalide";
+      case "price":
+        priceValid = !isNaN(value);
+        console.log(priceValid);
+        fieldValidationErrors.price = priceValid ? "" : " price invalide";
+        break;
+      case "picture":
+        urlValid =
+          /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/gi.test(
+            value
+          );
+        fieldValidationErrors.picture = urlValid ? "" : " The URL is Invalid";
         break;
       default:
         break;
@@ -105,7 +122,8 @@ class Form extends React.Component<any, any> {
       {
         formErrors: fieldValidationErrors,
         nameValid: nameValid,
-        ageValid: ageValid,
+        priceValid: priceValid,
+        pictureValid: urlValid,
       },
       this.validateForm
     );
@@ -118,7 +136,7 @@ class Form extends React.Component<any, any> {
         <FormErrors formErrors={this.state.formErrors} />
         <form onSubmit={this.handleSubmit}>
           <label>
-            Entrer votre nom:
+            Entrer le nom du produit:
             <input
               type="text"
               name="name"
@@ -127,11 +145,29 @@ class Form extends React.Component<any, any> {
             />
           </label>
           <label>
-            Entrer votre age:
+            Entrer votre prix:
             <input
               type="number"
-              name="age"
-              value={this.state.age || ""}
+              name="price"
+              value={this.state.price || ""}
+              onChange={this.handleUserInput}
+            />
+          </label>
+          <label>
+            Entrer votre asin:
+            <input
+              type="text"
+              name="asin"
+              value={this.state.asin || ""}
+              onChange={this.handleUserInput}
+            />
+          </label>
+          <label>
+            Entrer votre lien photo:
+            <input
+              type="text"
+              name="picture"
+              value={this.state.picture || ""}
               onChange={this.handleUserInput}
             />
           </label>
