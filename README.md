@@ -1,3 +1,7 @@
+# Lancer la commande suivante dans le repo avant de lancer le projet la première fois
+
+### `npm install`
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
